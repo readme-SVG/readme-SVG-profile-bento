@@ -1,0 +1,17 @@
+module.exports = [
+  require('./repos'),
+  require('./stars'),
+  require('./followers'),
+  require('./following'),
+  require('./langbar'),
+  require('./toprepos'),
+  require('./commits'),
+  require('./events'),
+  require('./spotlight'),
+  require('./langlist'),
+  require('./forked'),
+  require('./avgstars'),
+  require('./age'),
+  require('./forks'),
+  require('./issues'),
+];

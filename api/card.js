@@ -1,7 +1,7 @@
-const { W, GH } = require('./lib/constants');
-const { esc } = require('./lib/helpers');
-const { gh } = require('./lib/github');
-const ALL_SLIDES = require('./slides');
+const { W, GH } = require('../lib/constants');
+const { esc } = require('../lib/helpers');
+const { gh } = require('../lib/github');
+const ALL_SLIDES = require('../slides');
 
 function pickSlide(user, repos, events, commits, slidesParam, overrideIdx) {
   let enabled = ALL_SLIDES;

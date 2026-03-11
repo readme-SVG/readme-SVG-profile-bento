@@ -36,7 +36,7 @@
 - Web UI preview tool for card generation, slide toggling, and copy-paste embed snippets.
 - Supports both Markdown and HTML embed snippets for README integration.
 - Optional GitHub token support to jump from `60 req/hr` to `5000 req/hr` rate limit tier.
-- Serverless-first deployment via Vercel with function-level memory and timeout config.
+- Serverless-first deployment via Vercel with function-level timeout config.
 - Error-safe SVG response format (API always returns SVG, including fallback error payloads).
 
 > [!TIP]
@@ -44,7 +44,7 @@
 
 ## Tech Stack
 
-- **Runtime**: Node.js `>=18`.
+- **Runtime**: Node.js `20.x`.
 - **Serverless API**: Vercel function (`api/card.js`).
 - **Frontend**: Vanilla HTML/CSS/JS (`index.html`, `styles.css`, `app.js`).
 - **GitHub Integration**: GitHub REST API (`fetch` + custom wrapper).
@@ -59,12 +59,12 @@
 .
 ├── api/
 │   ├── card.js                # SVG card API handler
-│   ├── lib/
-│   │   ├── constants.js       # Theme and dimensions
-│   │   ├── github.js          # GitHub REST wrapper
-│   │   ├── helpers.js         # String/safe helpers
-│   │   └── svg.js             # SVG utility builders
-│   └── slides/                # Individual slide renderers
+├── lib/
+│   ├── constants.js           # Theme and dimensions
+│   ├── github.js              # GitHub REST wrapper
+│   ├── helpers.js             # String/safe helpers
+│   └── svg.js                 # SVG utility builders
+├── slides/                    # Individual slide renderers
 ├── .github/workflows/
 │   └── ai-issue.yml           # AI issue automation workflow
 ├── index.html                 # Preview and embed UI
@@ -80,7 +80,7 @@
 
 - **SVG-first output contract**: API returns `image/svg+xml` in both success and error paths, so embeds never hard-fail as broken JSON.
 - **Cache-aware dynamic behavior**: non-preview requests are cached (`s-maxage=600`) and map to a deterministic bucket index.
-- **Composable slide registry**: all slide modules are registered through `api/slides/index.js`, making extension straightforward.
+- **Composable slide registry**: all slide modules are registered through `slides/index.js`, making extension straightforward.
 - **Progressive data enrichment**: commits are aggregated from both repo commit endpoints and public push events for better coverage.
 - **Zero-framework frontend**: keeps preview page lightweight, dependency-free, and portable.
 
@@ -155,7 +155,7 @@ vercel --prod
 
 `vercel.json` already defines:
 
-- Function sizing for `api/card.js` (`memory: 256`, `maxDuration: 10`).
+- Function timeout for `api/card.js` (`maxDuration: 10`).
 - CORS headers for `/api/*` GET endpoints.
 
 ### CI/CD Notes

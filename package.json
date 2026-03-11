@@ -2,5 +2,7 @@
   "name": "gh-card",
   "version": "1.0.0",
   "description": "GitHub profile SVG card for README embeds",
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": "20.x"
+  }
 }

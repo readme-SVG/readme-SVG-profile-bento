@@ -14,4 +14,6 @@ module.exports = [
   require('./age'),
   require('./forks'),
   require('./issues'),
+  require('./latestissues'),
+  require('./closedissues'),
 ];

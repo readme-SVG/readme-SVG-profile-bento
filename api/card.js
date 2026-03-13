@@ -3,7 +3,7 @@ const { esc } = require('../lib/helpers');
 const { gh } = require('../lib/github');
 const ALL_SLIDES = require('../slides');
 
-function pickSlide(user, repos, events, commits, slidesParam, overrideIdx) {
+function pickSlide(user, repos, events, commits, issues, slidesParam, overrideIdx) {
   let enabled = ALL_SLIDES;
   if (slidesParam) {
     const ids = slidesParam.split(',').map(s => s.trim()).filter(Boolean);
@@ -17,7 +17,7 @@ function pickSlide(user, repos, events, commits, slidesParam, overrideIdx) {
   const idx = (overrideIdx !== undefined && overrideIdx >= 0 && overrideIdx < enabled.length)
     ? overrideIdx
     : bucket % enabled.length;
-  return enabled[idx].fn(user, repos, events, commits);
+  return enabled[idx].fn(user, repos, events, commits, issues);
 }
 
 module.exports = async function handler(req, res) {
@@ -40,11 +40,18 @@ module.exports = async function handler(req, res) {
   const token = process.env.GITHUB_TOKEN || '';
   try {
     const base = 'https://api.github.com';
-    const [user, repos, events] = await Promise.all([
+    const [user, repos, events, openIssues, closedIssues] = await Promise.all([
       gh(`${base}/users/${username}`, token),
       gh(`${base}/users/${username}/repos?sort=updated&per_page=100`, token),
       gh(`${base}/users/${username}/events/public?per_page=100`, token),
+      gh(`${base}/search/issues?q=author:${encodeURIComponent(username)}+type:issue+state:open&sort=updated&order=desc&per_page=10`, token),
+      gh(`${base}/search/issues?q=author:${encodeURIComponent(username)}+type:issue+state:closed&sort=updated&order=desc&per_page=10`, token),
     ]);
+
+    const issues = {
+      open: Array.isArray(openIssues?.items) ? openIssues.items : [],
+      closed: Array.isArray(closedIssues?.items) ? closedIssues.items : [],
+    };
 
     const commits = [];
     const reposSorted = [...repos].sort((a, b) => new Date(b.pushed_at) - new Date(a.pushed_at));
@@ -78,7 +85,7 @@ module.exports = async function handler(req, res) {
 
     const overrideIdx = q._slide !== undefined ? parseInt(q._slide, 10) : undefined;
     const slidesParam = q.slides || '';
-    const svgOut = pickSlide(user, repos, events, commits, slidesParam, overrideIdx);
+    const svgOut = pickSlide(user, repos, events, commits, issues, slidesParam, overrideIdx);
     const isPreview = overrideIdx !== undefined;
     res.setHeader('Cache-Control', isPreview ? 'no-cache' : 's-maxage=600,stale-while-revalidate=60');
     return res.status(200).send(svgOut);

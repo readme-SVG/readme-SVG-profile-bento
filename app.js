@@ -14,6 +14,8 @@ const ALL_SLIDES = [
   { id:'age',       label:'account age' },
   { id:'forks',     label:'total forks' },
   { id:'issues',    label:'open issues' },
+  { id:'latestissues', label:'latest issues' },
+  { id:'closedissues', label:'closed issues' },
 ];
 
 // state

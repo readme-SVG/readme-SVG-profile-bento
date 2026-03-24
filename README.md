@@ -102,8 +102,8 @@ Install these dependencies before local development:
 
 ```bash
 # 1) Clone repository
-git clone https://github.com/readme-SVG/readme-SVG-profile-bento.git
-cd readme-SVG-profile-bento
+git clone https://github.com/readme-SVG/readme-SVG-profile-bengo.git
+cd readme-SVG-profile-bengo
 
 # 2) Install Python dependencies (for workflow script tooling)
 python -m venv .venv
@@ -157,6 +157,14 @@ vercel --prod
 
 - Function timeout for `api/card.js` (`maxDuration: 10`).
 - CORS headers for `/api/*` GET endpoints.
+
+If Vercel import/deploy fails with a project-name validation error, set a lowercase slug explicitly, for example:
+
+```bash
+vercel link --project readme-svg-profile-bengo
+```
+
+Vercel project slugs are safest in lowercase letters, numbers, and hyphens only.
 
 ### CI/CD Notes
 
